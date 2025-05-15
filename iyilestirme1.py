@@ -2,6 +2,12 @@ import subprocess
 import tkinter as tk
 from tkinter import Label, Frame, Text
 from PIL import Image, ImageTk
+import sys
+
+if len(sys.argv) > 1:
+    username = sys.argv[1]
+else:
+    username = "Misafir"
 
 
 def kodu_iyilestir():
@@ -12,7 +18,7 @@ def kodu_iyilestir():
 
 def geri_don():
     panel.destroy()  # Bu pencereyi kapat
-    subprocess.run(["python", "main.py"])
+    subprocess.run(["python", "main.py",username])
 
 # Ana panel
 panel = tk.Tk()
@@ -55,3 +61,4 @@ geri_buton.pack(pady=10)
 
 # Çalıştır
 panel.mainloop()
+

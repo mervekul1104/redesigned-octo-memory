@@ -2,6 +2,12 @@ import subprocess
 import tkinter as tk
 from tkinter import Label, Frame, Text
 from PIL import Image, ImageTk
+import sys
+
+if len(sys.argv) > 1:
+    username = sys.argv[1]
+else:
+    username = "Misafir"
 
 def kodu_ayıkla():
     kod_kutusu.delete("1.0", tk.END)  # Önce temizle
@@ -10,7 +16,7 @@ def kodu_ayıkla():
 
 def geri_don():
     debug_console.destroy()  # Bu pencereyi kapat
-    subprocess.run(["python", "main.py"])
+    subprocess.run(["python", "main.py",username])
 
 # Ana pencere
 debug_console = tk.Tk()
@@ -53,3 +59,8 @@ geri_buton.pack(pady=10)
 
 # Çalıştır
 debug_console.mainloop()
+
+if len(sys.argv) > 1:
+    username = sys.argv[1]
+else:
+    username = "Misafir"

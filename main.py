@@ -82,11 +82,11 @@ def main_page(username):
         if frame_num == 1:
             change_bd(selection_frame_1)
             main.destroy()
-            subprocess.run(["python", "iyilestirme1.py"])  # İyileştirme sayfasını aç
+            subprocess.run(["python", "iyilestirme1.py", username]) # İyileştirme sayfasını aç
         elif frame_num == 2:
             change_bd(selection_frame_2)
             main.destroy()
-            subprocess.run(["python", "hataayiklama.py"])
+            subprocess.run(["python", "hataayiklama.py", username])
 
     # Kare kutulara tıklama olayları ekleyelim
     selection_frame_1.bind("<Button-1>", lambda e: on_click(1))
