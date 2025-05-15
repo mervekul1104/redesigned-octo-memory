@@ -1,8 +1,11 @@
-from tkinter import Tk, Label, Frame, Canvas
+import subprocess
+import sys
+from tkinter import Tk, Label, Frame, Canvas,Button
 from PIL import Image, ImageTk
 import time
 
-def main_page():
+
+def main_page(username):
     # Ana pencereyi oluştur
     main = Tk()
     main.title("Arka Planlı Arayüz")
@@ -18,7 +21,16 @@ def main_page():
     bg_label = Label(main, image=bg_photo)
     bg_label.place(relwidth=1, relheight=1)  # Resmi tüm pencereyi kaplayacak şekilde yerleştir
 
-    # Üzerine sadece "WELCOME TO CQR" yazısını ekleyelim
+    welcome_label = Label(main, text=f"Hoş geldin, {username}!", font=("Arial", 18), fg="white", bg="black")
+    welcome_label.place(relx=0.99, rely=0.02, anchor="ne")
+
+    def logout():
+        main.destroy()
+        subprocess.run(["python", "login.py"])
+
+    logout_button = Button(main, text="Çıkış Yap", command=logout, font=("Arial", 12), bg="red", fg="white")
+    logout_button.place(relx=0.99, rely=0.08, anchor="ne")
+
     text_label = Label(main, text="WELCOME TO CQR", font=("JetBrains Mono", 32), fg="white", bg="black")
     text_label.place(relx=0.5, rely=0.1, anchor="center")  # Pencerenin ortasına yerleştir
 
@@ -58,9 +70,9 @@ def main_page():
     debug_description.place(relx=0.5, rely=0.65, anchor="center")  # Alt açıklama
 
     # Kare kutulara tıklama olayı ekleyelim
-    def change_bd(frame, bd):
-        frame.config(bd=3)  # Rengi değiştir
-        main.after(600, reset_bd, frame)  # 1 saniye sonra geri eski haline getir
+    def change_bd(frame):
+        frame.config(bd=3)  # Çerçeveyi değiştir
+        main.after(600, lambda: frame.config(bd=10))  # 1 saniye sonra geri eski haline getir
 
     def reset_bd(frame):
         frame.config(bd="10")  # Rengi eski haline getir
@@ -68,9 +80,13 @@ def main_page():
     # Kare kutulara tıklama olayı ekleyelim
     def on_click(frame_num):
         if frame_num == 1:
-            change_bd(selection_frame_1, "3")  # Sol kutu mavi olur
+            change_bd(selection_frame_1)
+            main.destroy()
+            subprocess.run(["python", "iyilestirme1.py"])  # İyileştirme sayfasını aç
         elif frame_num == 2:
-            change_bd(selection_frame_2, "3")
+            change_bd(selection_frame_2)
+            main.destroy()
+            subprocess.run(["python", "hataayiklama.py"])
 
     # Kare kutulara tıklama olayları ekleyelim
     selection_frame_1.bind("<Button-1>", lambda e: on_click(1))
@@ -80,4 +96,8 @@ def main_page():
     main.mainloop()
 
 if __name__ == "__main__":
-    main_page()
+    if len(sys.argv) > 1:
+        username = sys.argv[1]
+    else:
+        username = "Misafir"
+    main_page(username)

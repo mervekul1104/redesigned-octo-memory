@@ -8,9 +8,9 @@ from main import main_page
 KULLANICI_ADI = "admin"
 SIFRE = "1234"
 
-def mainbaglama():
+def mainbaglama(username):
     login.destroy()
-    subprocess.run(["python", "main.py"])
+    subprocess.run(["python", "main.py", username])
 
 def forgot_password():
     messagebox.showinfo("Şifre Sıfırlama", "Şifre sıfırlama işlemi için e-posta gönderilecek.")
@@ -40,9 +40,8 @@ def giris_kontrol():
     kullanici = kullanici_entry.get()
     sifre = sifre_entry.get()
     if kullanici == KULLANICI_ADI and sifre == SIFRE:
-        messagebox.showinfo("Giriş Başarılı", "Hoş geldiniz!")
-        mainbaglama()
-
+        messagebox.showinfo("Giriş Başarılı", f"Hoş geldiniz, {kullanici}!")
+        mainbaglama(kullanici)  # Kullanıcı adını gönder
     else:
         messagebox.showerror("Hatalı Giriş", "Kullanıcı adı veya şifre yanlış.")
 
