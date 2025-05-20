@@ -3,15 +3,36 @@ import tkinter as tk
 from tkinter import Label, Frame, Text
 from PIL import Image, ImageTk
 import sys
+from google import genai
+
+client = genai.Client(api_key="AIzaSyCuplLWWIlDFkglTzhJUpUt2iPkbM-3YUI")
 
 if len(sys.argv) > 1:
     username = sys.argv[1]
 else:
     username = "Misafir"
 
+def kod_hata_ayikla(kod):
+    prompt = f"Bu kodda hata var mı kontrol et ve varsa hataları belirt, ayrıca hataları düzelt:\n\n{kod}"
+
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
+    return response.text
+
 def kodu_ayıkla():
-    kod_kutusu.delete("1.0", tk.END)  # Önce temizle
-    ayıklanmıs_kod = """ayıklanmıs kod"""
+    kod = kod_kutusu.get("1.0", tk.END).strip()
+    if not kod:
+        kod_kutusu.delete("1.0", tk.END)
+        kod_kutusu.insert(tk.END, "Lütfen önce kod kutusuna kod yazınız.")
+        return
+    try:
+        ayıklanmıs_kod = kod_hata_ayikla(kod)
+    except Exception as e:
+        ayıklanmıs_kod = f"Hata oluştu: {e}"
+
+    kod_kutusu.delete("1.0", tk.END)
     kod_kutusu.insert(tk.END, ayıklanmıs_kod)
 
 def geri_don():
@@ -42,9 +63,25 @@ cizgi = Frame(debug_console, bg="white", height=2, width=300)
 cizgi.pack(pady=5)
 
 # Kod kutusu
-kod_kutusu = Text(debug_console, bg="black", fg="lime", width=108, height=22,
-                  font=("Courier New", 12))
-kod_kutusu.pack(pady=40)
+kod_frame = tk.Frame(debug_console, bg="#000428")
+kod_frame.pack(pady=40, fill=tk.BOTH, expand=True)
+
+scrollbar_y = tk.Scrollbar(kod_frame)
+scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
+
+scrollbar_x = tk.Scrollbar(kod_frame, orient=tk.HORIZONTAL)
+scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
+
+# Kod kutusu aynı frame içine alındı
+kod_kutusu = Text(kod_frame, bg="black", fg="lime", width=108, height=22,
+                  font=("Courier New", 12),
+                  yscrollcommand=scrollbar_y.set,
+                  xscrollcommand=scrollbar_x.set,
+                  wrap="none")
+kod_kutusu.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+scrollbar_y.config(command=kod_kutusu.yview)
+scrollbar_x.config(command=kod_kutusu.xview)
 
 # Buton
 buton = tk.Button(debug_console, text="Hata Ayıkla   ➤", font=("Georgia", 14, "bold"),

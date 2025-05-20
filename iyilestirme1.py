@@ -3,18 +3,40 @@ import tkinter as tk
 from tkinter import Label, Frame, Text
 from PIL import Image, ImageTk
 import sys
+from google import genai
+
+client = genai.Client(api_key="AIzaSyCuplLWWIlDFkglTzhJUpUt2iPkbM-3YUI")
 
 if len(sys.argv) > 1:
     username = sys.argv[1]
 else:
     username = "Misafir"
 
+def kod_iyilestir(kod):
+    prompt = f"Sen bir yazılım geliştirme uzmanısın. Aşağıdaki kodu daha iyi, optimize ve okunabilir hale getir:\n\n{kod}"
+
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
+    return response.text
 
 def kodu_iyilestir():
-    kod_kutusu.delete("1.0", tk.END)  # Önce temizle
-    iyilestirilmis_kod = """def toplama(a, b):
-    return a + b"""
+    kod = kod_kutusu.get("1.0", tk.END).strip()
+    if not kod:
+        kod_kutusu.delete("1.0", tk.END)
+        kod_kutusu.insert(tk.END, "Lütfen önce kod kutusuna kod yazınız.")
+        return
+
+    try:
+        iyilestirilmis_kod = kod_iyilestir(kod)
+    except Exception as e:
+        iyilestirilmis_kod = f"Hata oluştu: {e}"
+
+    kod_kutusu.delete("1.0", tk.END)
     kod_kutusu.insert(tk.END, iyilestirilmis_kod)
+
+
 
 def geri_don():
     panel.destroy()  # Bu pencereyi kapat
@@ -43,10 +65,25 @@ baslik.pack(pady=(30, 10))
 cizgi = Frame(panel, bg="white", height=2, width=300)
 cizgi.pack(pady=5)
 
-# Kod kutusu
-kod_kutusu = Text(panel, bg="black", fg="lime", width=108, height=22,
-                  font=("Courier New", 12))
-kod_kutusu.pack(pady=40)
+kod_frame = tk.Frame(panel, bg="#000428")
+kod_frame.pack(pady=40, fill=tk.BOTH, expand=True)
+
+scrollbar_y = tk.Scrollbar(kod_frame)
+scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
+
+scrollbar_x = tk.Scrollbar(kod_frame, orient=tk.HORIZONTAL)
+scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
+
+kod_kutusu = Text(kod_frame, bg="black", fg="lime", width=108, height=22,
+                  font=("Courier New", 12),
+                  yscrollcommand=scrollbar_y.set,
+                  xscrollcommand=scrollbar_x.set,
+                  wrap="none")
+kod_kutusu.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+scrollbar_y.config(command=kod_kutusu.yview)
+scrollbar_x.config(command=kod_kutusu.xview)
+
 
 # Buton
 buton = tk.Button(panel, text="İYİLEŞTİR   ➤", font=("Georgia", 14, "bold"),
