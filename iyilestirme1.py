@@ -13,7 +13,7 @@ else:
     username = "Misafir"
 
 def kod_iyilestir(kod):
-    prompt = f"Sen bir yazılım geliştirme uzmanısın. Aşağıdaki kodu daha iyi, optimize ve okunabilir hale getir:\n\n{kod}"
+    prompt = f"Sen bir yazılım geliştirme uzmanısın. Aşağıdaki kodu daha iyi, optimize ve okunabilir hale getir ama açıklama yapmadan sadece iyileştirilmiş kodu çıktı olarak ver:\n\n{kod}"
 
     response = client.models.generate_content(
         model="gemini-2.0-flash",

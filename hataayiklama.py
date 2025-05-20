@@ -13,7 +13,7 @@ else:
     username = "Misafir"
 
 def kod_hata_ayikla(kod):
-    prompt = f"Bu kodda hata var mı kontrol et ve varsa hataları belirt, ayrıca hataları düzelt:\n\n{kod}"
+    prompt = f"Bu kodda hata var mı kontrol et ve varsa hataları belirt, ayrıca hataları düzelt ama açıklama yapmadan sadece düzeltilmiş kodu çıktı olarak ver:\n\n{kod}"
 
     response = client.models.generate_content(
         model="gemini-2.0-flash",
