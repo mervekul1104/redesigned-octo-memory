@@ -15,6 +15,9 @@ def mainbaglama(username):
 def forgot_password():
     messagebox.showinfo("Şifre Sıfırlama", "Şifre sıfırlama işlemi için e-posta gönderilecek.")
 
+def kayit_ol():
+    messagebox.showinfo("Kayıt Olma", "Kayit Olma işlemi için sayfa açılıcak.")
+
 # Ana arayüz (giriş sonrası çalışacak olan senin önceki arayüzün buraya taşınabilir)
 def ana_ekran():
     ana = Tk()
@@ -73,5 +76,6 @@ sifre_entry.place(x=530, y=350)
 
 Button(login, text="Giriş Yap", command=giris_kontrol,font=("Arial", 14, "bold"),width=21,height=1).place(x=530, y=400,relwidth=0.207)
 Button(login, text="Şifremi Unuttum",bg="#046cac",fg="blue", cursor="hand2", bd=0, command=forgot_password).place(x=703, y=440,relwidth=0.07,relheight=0.025)
+Button(login, text="Kayıt ol", cursor="hand2", bd=0, command=kayit_ol).place(x=530, y=440,relwidth=0.07,relheight=0.025)
 
 login.mainloop()
