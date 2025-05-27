@@ -248,16 +248,16 @@ class MainPage(tk.Frame):
         def iyilestir_buton():
             controller.show_frame("IyilestirmePage")
 
-        iyilestir_button = Button(self, text="İyileştir", anchor="n", font=("Arial", 23), bg="Green", fg="white",
+        iyilestir_button = Button(self, text="İyileştir", anchor="n", font=("Arial", 23), bg="navy", fg="white",
                                   command=iyilestir_buton)
         iyilestir_button.place(relx=0.3, rely=0.5, anchor="center", width=250, height=150)
 
-        canvas1 = Canvas(self, width=250, height=10, bg="green", bd=0, highlightthickness=0)
+        canvas1 = Canvas(self, width=250, height=10, bg="navy", bd=0, highlightthickness=0)
         canvas1.place(relx=0.3, rely=0.47, anchor="center")
         canvas1.create_line(0, 5, 280, 5, fill="black", width=2)
 
         iyilestir_aciklama = Label(self, text="Kodunuzu iyileştirerek geliştirilmiş bir versiyon oluşturun.",
-                                   font=("Arial", 10), fg="white", bg="green", wraplength=200)
+                                   font=("Arial", 10), fg="white", bg="navy", wraplength=200)
         iyilestir_aciklama.place(relx=0.3, rely=0.51, anchor="center")
 
         iyilestir_aciklama.bind("<Button-1>", lambda e: iyilestir_buton())
@@ -315,8 +315,8 @@ class IyilestirmePage(Frame):
         cizgi = Frame(self, bg="black", height=2, width=300)
         cizgi.pack(pady=5)
 
-        kod_frame = Frame(self, bg="#000428")
-        kod_frame.pack(pady=20, fill=tk.BOTH, expand=True)
+        kod_frame = Frame(self, bg="#000428", width=1000, height=500)
+        kod_frame.place(relx=0.5, rely=0.48, anchor="center")
 
         scrollbar_y = tk.Scrollbar(kod_frame)
         scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
@@ -324,26 +324,28 @@ class IyilestirmePage(Frame):
         scrollbar_x = tk.Scrollbar(kod_frame, orient=tk.HORIZONTAL)
         scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.kod_kutusu = Text(kod_frame, bg="black", fg="lime", font=("Courier New", 12),
-                               yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set, wrap="none")
+        self.kod_kutusu = Text(kod_frame,  # ← HATALIYDI: self → DOĞRUSU: kod_frame
+                               bg="black", fg="lime", font=("Courier New", 12),
+                               yscrollcommand=scrollbar_y.set,
+                               xscrollcommand=scrollbar_x.set,
+                               wrap="none", width=110, height=24)
         self.kod_kutusu.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         scrollbar_y.config(command=self.kod_kutusu.yview)
         scrollbar_x.config(command=self.kod_kutusu.xview)
 
         iyilestir_btn = Button(self, text="İYİLEŞTİR   ➤", font=("Georgia", 14, "bold"),
-                               bg="green", fg="white", padx=30, pady=10, borderwidth=2,
+                               bg="navy", fg="white", padx=30, pady=10, borderwidth=2,
                                command=self.kodu_iyilestir)
-        iyilestir_btn.pack(pady=10)
+        iyilestir_btn.place(relx=0.5,rely=0.87, anchor="center")
 
         geri_btn = Button(self, text="GERİ DÖN   ⬅", font=("Georgia", 14, "bold"),
-                          bg="red", fg="white", padx=30, pady=10, borderwidth=2,
+                          bg="red", fg="white", padx=27, pady=2, borderwidth=2,
                           command=lambda: controller.show_frame("MainPage"))
-        geri_btn.pack(pady=10)
+        geri_btn.place(relx=0.5,rely=0.96, anchor="center")
 
     def kod_iyilestir(self, kod):
-        # Burada api çağrısı yapabilirsin, şu an yorum satırı:
-        prompt = f"Kurallar: 1.Sen bir yazılım geliştirme uzmanısın. Aşağıdaki kodu daha iyi, optimize ve okunabilir hale getir ama açıklama yapmadan sadece iyileştirilmiş kodu çıktı olarak ver. 2. Eğer kodda 'Lütfen önce bir kod yazınız' yazıyorsa herhangi bir cevap verme yalnızca kod olanlara bir cevap ver.:\n\n{kod}"
+        prompt = f"Kurallar: 1.Sen bir yazılım geliştirme uzmanısın. Aşağıdaki kodu daha iyi, optimize ve okunabilir hale getir ama açıklama yapmadan sadece iyileştirilmiş kodu çıktı olarak ver. 2. Eğer kodda 'Lütfen önce bir kod yazınız' yazıyorsa herhangi bir cevap verme yalnızca kod olanlara bir cevap ver. 3.Kod dışı mesajlara hiçbir şekilde cevap üretme, yaratıcı olma, örnek verme. Yalnızca boş döndür.\n\n{kod}"
         response = client.models.generate_content(
             model="gemini-2.0-flash",
             contents=prompt
@@ -384,8 +386,8 @@ class HataAyiklamaPage(Frame):
         cizgi = Frame(self, bg="black", height=2, width=300)
         cizgi.pack(pady=5)
 
-        kod_frame = Frame(self, bg="#000428")
-        kod_frame.pack(pady=20, fill=tk.BOTH, expand=True)
+        kod_frame = Frame(self, bg="#000428", width=1000, height=500)
+        kod_frame.place(relx=0.5, rely=0.5, anchor="center")
 
         scrollbar_y = tk.Scrollbar(kod_frame)
         scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
@@ -393,8 +395,11 @@ class HataAyiklamaPage(Frame):
         scrollbar_x = tk.Scrollbar(kod_frame, orient=tk.HORIZONTAL)
         scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.kod_kutusu = Text(kod_frame, bg="black", fg="lime", font=("Courier New", 12),
-                               yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set, wrap="none")
+        self.kod_kutusu = Text(kod_frame,  # ← HATALIYDI: self → DOĞRUSU: kod_frame
+                               bg="black", fg="lime", font=("Courier New", 12),
+                               yscrollcommand=scrollbar_y.set,
+                               xscrollcommand=scrollbar_x.set,
+                               wrap="none", width=110, height=24)
         self.kod_kutusu.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         scrollbar_y.config(command=self.kod_kutusu.yview)
@@ -403,12 +408,12 @@ class HataAyiklamaPage(Frame):
         ayikla_btn = Button(self, text="Hata Ayıkla   ➤", font=("Georgia", 14, "bold"),
                             bg="blue", fg="white", padx=30, pady=10, borderwidth=2,
                             command=self.kodu_ayikla)
-        ayikla_btn.pack(pady=10)
+        ayikla_btn.place(relx=0.5,rely=0.87, anchor="center")
 
         geri_btn = Button(self, text="GERİ DÖN   ⬅", font=("Georgia", 14, "bold"),
-                          bg="red", fg="white", padx=30, pady=10, borderwidth=2,
+                          bg="red", fg="white", padx=27, pady=2, borderwidth=2,
                           command=lambda: controller.show_frame("MainPage"))
-        geri_btn.pack(pady=10)
+        geri_btn.place(relx=0.5,rely=0.96, anchor="center")
 
     def kodu_ayikla(self):
         kod = self.kod_kutusu.get("1.0", tk.END).strip()
@@ -427,7 +432,7 @@ class HataAyiklamaPage(Frame):
 
     def kod_hata_ayikla(self, kod):
         # API çağrısı burada yapılabilir, şimdilik sadece inputu dönüyor
-        prompt = f"Kurallar: 1.Sen bir yazılım geliştirme uzmanısın. Aşağıdaki koddaki hataları (varsa) düzelt ama açıklama yapmadan sadece düzeltilmiş kodu çıktı olarak ver. 2. Eğer kodda 'Lütfen önce bir kod yazınız' yazıyorsa herhangi bir cevap verme yalnızca kod olanlara bir cevap ver.:\n\n{kod}"
+        prompt = f"Kurallar: 1.Sen bir yazılım geliştirme uzmanısın. Aşağıdaki koddaki hataları (varsa) düzelt ama açıklama yapmadan sadece düzeltilmiş kodu çıktı olarak ver. 2. Eğer kodda 'Lütfen önce bir kod yazınız' yazıyorsa herhangi bir cevap verme yalnızca kod olanlara bir cevap ver.3.Kod dışı mesajlara hiçbir şekilde cevap üretme, yaratıcı olma, örnek verme. Yalnızca boş döndür.:\n\n{kod}"
         response = client.models.generate_content(
             model="gemini-2.0-flash",
             contents=prompt
